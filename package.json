@@ -5,13 +5,13 @@
   "type": "module",
   "repository": {
 		"type": "git",
-		"url": "git+https://github.com/dario-bastos-dev/AIO-front.git"
+		"url": "git+https://github.com/dario-bastos-dev/Exel-Processor.git"
 	},
 	"keywords": [],
 	"author": "Dário Bastos",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/dario-bastos-dev/AIO-front/issues"
+		"url": "https://github.com/dario-bastos-dev/Exel-Processor/issues"
 	},
   "scripts": {
     "start": "vite",
