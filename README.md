@@ -1,54 +1,67 @@
-# React + TypeScript + Vite
+# Excel Processor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descrição
+Excel Processor é uma aplicação web desenvolvida com React e TypeScript que permite aos usuários carregar, gerenciar e pesquisar dados em arquivos Excel de forma eficiente e intuitiva.
 
-Currently, two official plugins are available:
+## Funcionalidades Principais
+### 1. Gerenciamento de Arquivos Excel
+- **Upload de Arquivos:** Os usuários podem fazer upload de arquivos Excel (.xlsx, .xls).
+- **Listagem de Arquivos:** Exibe todos os arquivos Excel carregados.
+- **Ativação de Arquivo:** Permite selecionar um arquivo específico para processamento.
+- **Desativação de Arquivo:** Opção para parar o uso do arquivo atual.
+- **Exclusão de Arquivos:** Remove arquivos da lista e do armazenamento.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 2. Processamento de Dados
+- **Leitura de Arquivos Excel:** Utiliza a biblioteca ExcelJS para ler e processar arquivos Excel.
+- **Extração de Cabeçalhos:** Identifica automaticamente os cabeçalhos das colunas.
+- **Armazenamento de Dados:** Salva os dados processados para uso rápido.
 
-## Expanding the ESLint configuration
+### 3. Funcionalidade de Busca
+- **Seleção de Coluna:** Permite escolher uma coluna específica para realizar a busca.
+- **Múltiplos Valores de Busca:** Suporta a entrada de múltiplos valores para busca.
+- **Busca Exata:** Realiza uma busca case-insensitive por correspondências exatas.
+- **Exibição de Resultados:** Mostra os resultados da busca em uma tabela formatada.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 4. Interface de Usuário
+- **Design Responsivo:** Interface amigável e responsiva usando TailwindCSS.
+- **Feedback Visual:** Destaque para o arquivo atualmente ativo.
+- **Tabela de Resultados:** Exibe os resultados da busca com suporte a scroll para grandes conjuntos de dados.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 5. Persistência de Dados
+- **Armazenamento Local:** Utiliza o localStorage para salvar arquivos e configurações.
+- **Recuperação de Sessão:** Recarrega o estado anterior ao reabrir a aplicação.
+
+## Tecnologias Utilizadas
+- React
+- TypeScript
+- ExcelJS
+- TailwindCSS
+- Vite (para build e desenvolvimento)
+
+## Como Usar
+1. Faça o upload de um arquivo Excel.
+2. Selecione o arquivo na lista para ativá-lo.
+3. Escolha uma coluna para realizar a busca.
+4. Insira os valores de busca (um por linha).
+5. Clique em "Search" para ver os resultados.
+
+## Instalação e Execução
+```bash
+# Clone o repositório
+git clone https://github.com/dario-bastos-dev/Exel-Processor.git
+
+# Entre no diretório do projeto
+cd excel-processor
+
+# Instale as dependências
+npm install
+
+# Execute o projeto em modo de desenvolvimento
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Contribuições
+Contribuições são bem-vindas! Por favor, leia as diretrizes de contribuição antes de submeter pull requests.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Licença
+Este projeto está licenciado sob a MIT.
