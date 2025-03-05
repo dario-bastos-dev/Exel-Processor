@@ -64,4 +64,4 @@ npm run dev
 Contribuições são bem-vindas! Por favor, leia as diretrizes de contribuição antes de submeter pull requests.
 
 ## Licença
-Este projeto está licenciado sob a MIT,
+Este projeto está licenciado sob a MIT.
