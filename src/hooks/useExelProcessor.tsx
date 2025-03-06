@@ -1,130 +1,132 @@
-// src/hooks/useExcelProcessor.ts
-import { useState, useEffect } from 'react';
-import * as ExcelJS from 'exceljs';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { ExcelFile, SearchConfig } from '../types/types';
-import { StorageService } from '../services/storage-service';
+
+const API_URL = 'http://localhost:3000';
 
 export const useExcelProcessor = () => {
-  const [files, setFiles] = useState<ExcelFile[]>([]);
-  const [activeFile, setActiveFile] = useState<ExcelFile | null>(null);
-  const [searchConfig, setSearchConfig] = useState<SearchConfig | null>(null);
-  const [searchResults, setSearchResults] = useState<any[][]>([]);
+	const [files, setFiles] = useState<ExcelFile[]>([]);
+	const [activeFile, setActiveFile] = useState<ExcelFile | null>(null);
+	const [searchConfig, setSearchConfig] = useState<SearchConfig | null>(null);
+	const [searchResults, setSearchResults] = useState<any[][]>([]);
+	const [headers, setHeaders] = useState<string[]>([]);
 
-  useEffect(() => {
-    const storedFiles = StorageService.getExcelFiles();
-    setFiles(storedFiles);
-    const storedConfig = StorageService.getSearchConfig();
-    if (storedConfig) {
-      setSearchConfig(storedConfig);
-      setActiveFile(StorageService.getExcelFile(storedConfig.fileId) || null);
-    }
-  }, []);
+	useEffect(() => {
+		fetchFiles();
+	}, []);
 
-  const handleFileUpload = async (file: File) => {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(await file.arrayBuffer());
+	const fetchFiles = async () => {
+		try {
+			const response = await axios.get(`${API_URL}/files`);
+			setFiles(response.data);
+		} catch (error) {
+			console.error('Error fetching files:', error);
+		}
+	};
 
-    const worksheet = workbook.worksheets[0];
-    const headers: string[] = [];
-    const data: any[][] = [];
+	const handleFileUpload = async (file: File) => {
+		try {
+			const formData = new FormData();
+			formData.append('file', file);
 
-    worksheet.eachRow((row, rowNumber) => {
-      const rowData: any[] = [];
-      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-        if (rowNumber === 1) {
-          headers.push(cell.text || `Column ${colNumber}`);
-        } else {
-          rowData.push(cell.text);
-        }
-      });
-      if (rowNumber > 1) {
-        data.push(rowData);
-      }
-    });
+			const response = await axios.post(`${API_URL}/upload`, formData, {
+				headers: { 'Content-Type': 'multipart/form-data' },
+			});
 
-    const newFile: ExcelFile = {
-      id: Date.now().toString(),
-      name: file.name,
-      headers,
-      data,
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-    };
+			const newFile = response.data;
+			setFiles((prevFiles) => [...prevFiles, newFile]);
+		} catch (error) {
+			console.error('Error uploading file:', error);
+		}
+	};
 
-    StorageService.saveExcelFile(newFile);
-    setFiles(prevFiles => [...prevFiles, newFile]);
-  };
+	const handleFileSelect = async (fileId: string) => {
+		try {
+			const file = files.find((f) => f.id === fileId);
+			if (file) {
+				setActiveFile(file);
+				// Inicialize searchConfig com a primeira coluna selecionada
+				setSearchConfig({
+					fileId: file.id,
+					selectedColumn: 0,
+					searchValues: [],
+				});
+				setSearchResults([]);
 
-  const handleFileSelect = (fileId: string) => {
-    const file = StorageService.getExcelFile(fileId);
-    if (file) {
-      setActiveFile(file);
-      StorageService.updateExcelFileLastUsed(fileId);
-      setSearchConfig(null);
-      setSearchResults([]);
-    }
-  };
+				// Buscar os cabeçalhos do arquivo
+				const response = await axios.get(`${API_URL}/files/${fileId}/headers`);
+				setHeaders(response.data);
+			}
+		} catch (error) {
+			console.error('Error selecting file:', error);
+		}
+	};
 
-  const handleFileStop = () => {
-    setActiveFile(null);
-    setSearchConfig(null);
-    setSearchResults([]);
-    StorageService.saveSearchConfig(null);
-  };
+	const handleFileStop = () => {
+		setActiveFile(null);
+		setSearchConfig(null);
+		setSearchResults([]);
+		setHeaders([]);
+	};
 
-  const handleFileDelete = (fileId: string) => {
-    StorageService.deleteExcelFile(fileId);
-    setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
-    
-    if (activeFile?.id === fileId) {
-      handleFileStop();
-    }
-  };
+	const handleFileDelete = async (fileId: string) => {
+		try {
+			await axios.delete(`${API_URL}/files/${fileId}`);
+			setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+			if (activeFile?.id === fileId) {
+				handleFileStop();
+			}
+		} catch (error) {
+			console.error('Error deleting file:', error);
+		}
+	};
 
-  const handleColumnSelect = (columnIndex: number) => {
-    if (activeFile) {
-      const newConfig: SearchConfig = {
-        fileId: activeFile.id,
-        selectedColumn: columnIndex,
-        searchValues: [],
-      };
-      setSearchConfig(newConfig);
-      StorageService.saveSearchConfig(newConfig);
-    }
-  };
+	const handleColumnSelect = (columnIndex: number) => {
+		if (activeFile && searchConfig) {
+			setSearchConfig({
+				...searchConfig,
+				selectedColumn: columnIndex,
+			});
+		}
+	};
 
-  const handleSearchValuesChange = (values: string[]) => {
-    if (searchConfig) {
-      const newConfig = { ...searchConfig, searchValues: values };
-      setSearchConfig(newConfig);
-      StorageService.saveSearchConfig(newConfig);
-    }
-  };
+	const handleSearchValuesChange = (values: string[]) => {
+		if (searchConfig) {
+			setSearchConfig({
+				...searchConfig,
+				searchValues: values,
+			});
+		}
+	};
 
-  const performSearch = () => {
-    if (!activeFile || !searchConfig) return;
+	const performSearch = async () => {
+		if (!activeFile || !searchConfig) return;
 
-    const results = activeFile.data.filter(row => {
-      const cellValue = row[searchConfig.selectedColumn]?.toString().trim().toLowerCase();
-      return searchConfig.searchValues.some(searchValue => 
-        cellValue === searchValue.trim().toLowerCase()
-      );
-    });
+		try {
+			const response = await axios.post(`${API_URL}/search`, {
+				fileId: activeFile.id,
+				columnIndex: searchConfig.selectedColumn,
+				searchValues: searchConfig.searchValues,
+			});
 
-    setSearchResults(results);
-  };
+			setSearchResults(response.data.searchResults);
+		} catch (error) {
+			console.error('Error performing search:', error);
+		}
+	};
 
-  return {
-    files,
-    activeFile,
-    searchConfig,
-    searchResults,
-    handleFileUpload,
-    handleFileSelect,
-    handleFileStop,
-    handleFileDelete,
-    handleColumnSelect,
-    handleSearchValuesChange,
-    performSearch,
-  };
+	return {
+		files,
+		activeFile,
+		searchConfig,
+		searchResults,
+		headers,
+		handleFileUpload,
+		handleFileSelect,
+		handleFileStop,
+		handleFileDelete,
+		handleColumnSelect,
+		handleSearchValuesChange,
+		performSearch,
+	};
 };

@@ -1,9 +1,9 @@
 {
-  "name": "exel_processor",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "repository": {
+	"name": "exel_processor",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/dario-bastos-dev/Exel-Processor.git"
 	},
@@ -13,42 +13,39 @@
 	"bugs": {
 		"url": "https://github.com/dario-bastos-dev/Exel-Processor/issues"
 	},
-  "scripts": {
-    "start": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "npx lint-staged",
-    "preview": "vite preview",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.0.9",
-    "@types/exceljs": "^0.5.3",
-    "exceljs": "^4.4.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.9"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "@vitejs/plugin-react": "^4.3.4",
-    "globals": "^15.15.0",
-    "typescript": "~5.7.2",
-    "vite": "^6.2.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "biome check --write --organize-imports-enabled=true --no-errors-on-unmatched",
-      "biome format --write --no-errors-on-unmatched"
-    ],
-    "*.{css,scss,less}": [
-      "biome check --write --no-errors-on-unmatched"
-    ],
-    "*.{json,md}": [
-      "biome format --write --no-errors-on-unmatched"
-    ]
-  }
+	"scripts": {
+		"start": "vite",
+		"build": "tsc -b && vite build",
+		"lint": "npx lint-staged",
+		"preview": "vite preview",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.0.9",
+		"@types/exceljs": "^0.5.3",
+		"axios": "^1.8.1",
+		"exceljs": "^4.4.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.4.3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tailwindcss": "^4.0.9"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4",
+		"@vitejs/plugin-react": "^4.3.4",
+		"globals": "^15.15.0",
+		"typescript": "~5.7.2",
+		"vite": "^6.2.0"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"biome check --write --organize-imports-enabled=true --no-errors-on-unmatched",
+			"biome format --write --no-errors-on-unmatched"
+		],
+		"*.{css,scss,less}": ["biome check --write --no-errors-on-unmatched"],
+		"*.{json,md}": ["biome format --write --no-errors-on-unmatched"]
+	}
 }
