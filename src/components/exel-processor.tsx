@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { useExcelProcessor } from '../hooks/useExelProcessor';
+import useExcelProcessor from '../hooks/useExelProcessor';
 import getRealName from '../utils/name-file';
 import Loader from './loader';
 

@@ -1,10 +1,8 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import api from '../api/axios-config';
 import { ExcelFile, SearchConfig } from '../types/types';
 
-const API_URL = 'https://exel-processor-back.onrender.com';
-
-export const useExcelProcessor = () => {
+const useExcelProcessor = () => {
 	const [files, setFiles] = useState<ExcelFile[]>([]);
 	const [activeFile, setActiveFile] = useState<ExcelFile | null>(null);
 	const [searchConfig, setSearchConfig] = useState<SearchConfig | null>(null);
@@ -19,7 +17,7 @@ export const useExcelProcessor = () => {
 	const fetchFiles = async () => {
 		setIsLoading(true);
 		try {
-			const response = await axios.get(`${API_URL}/files`);
+			const response = await api.get('files');
 			setFiles(response.data);
 		} catch (error) {
 			console.error('Error fetching files:', error);
@@ -35,9 +33,7 @@ export const useExcelProcessor = () => {
 			const formData = new FormData();
 			formData.append('file', file);
 
-			const response = await axios.post(`${API_URL}/upload`, formData, {
-				headers: { 'Content-Type': 'multipart/form-data' },
-			});
+			const response = await api.post(`upload`, formData);
 
 			const newFile = response.data;
 			setFiles((prevFiles) => [...prevFiles, newFile]);
@@ -64,7 +60,7 @@ export const useExcelProcessor = () => {
 				setSearchResults([]);
 
 				// Buscar os cabeçalhos do arquivo
-				const response = await axios.get(`${API_URL}/files/${fileId}/headers`);
+				const response = await api.get(`files/${fileId}/headers`);
 				setHeaders(response.data);
 			}
 		} catch (error) {
@@ -85,7 +81,7 @@ export const useExcelProcessor = () => {
 		setIsLoading(true);
 
 		try {
-			await axios.delete(`${API_URL}/files/${fileId}`);
+			await api.delete(`files/${fileId}`);
 			setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
 			if (activeFile?.id === fileId) {
 				handleFileStop();
@@ -120,7 +116,7 @@ export const useExcelProcessor = () => {
 		if (!activeFile || !searchConfig) return;
 
 		try {
-			const response = await axios.post(`${API_URL}/search`, {
+			const response = await api.post(`search`, {
 				fileId: activeFile.id,
 				columnIndex: searchConfig.selectedColumn,
 				searchValues: searchConfig.searchValues,
@@ -150,3 +146,5 @@ export const useExcelProcessor = () => {
 		isLoading,
 	};
 };
+
+export default useExcelProcessor;
