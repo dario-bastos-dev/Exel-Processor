@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { ExcelFile, SearchConfig } from '../types/types';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://exel-processor-back.onrender.com';
 
 export const useExcelProcessor = () => {
 	const [files, setFiles] = useState<ExcelFile[]>([]);
@@ -10,21 +10,27 @@ export const useExcelProcessor = () => {
 	const [searchConfig, setSearchConfig] = useState<SearchConfig | null>(null);
 	const [searchResults, setSearchResults] = useState<any[][]>([]);
 	const [headers, setHeaders] = useState<string[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		fetchFiles();
 	}, []);
 
 	const fetchFiles = async () => {
+		setIsLoading(true);
 		try {
 			const response = await axios.get(`${API_URL}/files`);
 			setFiles(response.data);
 		} catch (error) {
 			console.error('Error fetching files:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const handleFileUpload = async (file: File) => {
+		setIsLoading(true);
+
 		try {
 			const formData = new FormData();
 			formData.append('file', file);
@@ -37,10 +43,14 @@ export const useExcelProcessor = () => {
 			setFiles((prevFiles) => [...prevFiles, newFile]);
 		} catch (error) {
 			console.error('Error uploading file:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const handleFileSelect = async (fileId: string) => {
+		setIsLoading(true);
+
 		try {
 			const file = files.find((f) => f.id === fileId);
 			if (file) {
@@ -59,6 +69,8 @@ export const useExcelProcessor = () => {
 			}
 		} catch (error) {
 			console.error('Error selecting file:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -70,6 +82,8 @@ export const useExcelProcessor = () => {
 	};
 
 	const handleFileDelete = async (fileId: string) => {
+		setIsLoading(true);
+
 		try {
 			await axios.delete(`${API_URL}/files/${fileId}`);
 			setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
@@ -78,6 +92,8 @@ export const useExcelProcessor = () => {
 			}
 		} catch (error) {
 			console.error('Error deleting file:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -100,6 +116,7 @@ export const useExcelProcessor = () => {
 	};
 
 	const performSearch = async () => {
+		setIsLoading(true);
 		if (!activeFile || !searchConfig) return;
 
 		try {
@@ -112,6 +129,8 @@ export const useExcelProcessor = () => {
 			setSearchResults(response.data.searchResults);
 		} catch (error) {
 			console.error('Error performing search:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -128,5 +147,6 @@ export const useExcelProcessor = () => {
 		handleColumnSelect,
 		handleSearchValuesChange,
 		performSearch,
+		isLoading,
 	};
 };
