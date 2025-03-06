@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import useExcelProcessor from '../hooks/useExelProcessor';
 import getRealName from '../utils/name-file';
 import Loader from './loader';
@@ -19,6 +19,23 @@ const ExcelProcessor: React.FC = () => {
 		performSearch,
 		isLoading,
 	} = useExcelProcessor();
+
+	const tableRef = useRef<HTMLTableElement>(null);
+
+	const copyTableToClipboard = async () => {
+		if (tableRef.current) {
+			try {
+				const text = tableRef.current.innerText;
+				await navigator.clipboard.writeText(text);
+				alert('Resultados copiados para a área de transferência!');
+			} catch (err) {
+				console.error('Falha ao copiar', err);
+				alert(
+					'Não foi possível copiar os resultados. Por favor, tente novamente.',
+				);
+			}
+		}
+	};
 
 	const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -161,7 +178,10 @@ const ExcelProcessor: React.FC = () => {
 								Found {searchResults.length} matches
 							</p>
 							<div className="overflow-auto max-h-[500px]">
-								<table className="w-full border-collapse table-auto">
+								<table
+									ref={tableRef}
+									className="w-full border-collapse table-auto"
+								>
 									<thead className="sticky top-0 bg-gray-100 shadow-sm">
 										<tr>
 											{headers.map((header, index) => (
@@ -195,6 +215,12 @@ const ExcelProcessor: React.FC = () => {
 									</tbody>
 								</table>
 							</div>
+							<button
+								onClick={copyTableToClipboard}
+								className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+							>
+								Copiar Resultados
+							</button>
 						</div>
 					</div>
 				)}

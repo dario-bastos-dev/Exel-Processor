@@ -33,7 +33,11 @@ const useExcelProcessor = () => {
 			const formData = new FormData();
 			formData.append('file', file);
 
-			const response = await api.post(`upload`, formData);
+			const response = await api.post(`upload`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
 
 			const newFile = response.data;
 			setFiles((prevFiles) => [...prevFiles, newFile]);
