@@ -4,17 +4,20 @@ FROM node:current-alpine3.20 AS builder
 # Define o diretório de trabalho
 WORKDIR /usr/src/app
 
+# instalando o pnpm
+RUN npm install --global corepack@latest && corepack enable pnpm@latest
+
 # Copiar package.json e package-lock.json
 COPY package*.json ./
 
 # Instalar as dependências
-RUN npm ci
+RUN pnpm install
 
 # Copiar o restante do código
 COPY . .
 
 # Construir a aplicação
-RUN npm run build
+RUN pnpm run build
 
 # Etapa 2: Servir a aplicação com Nginx
 FROM nginx:alpine AS runner

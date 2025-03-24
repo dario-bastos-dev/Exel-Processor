@@ -19,7 +19,7 @@ services:
     environment:
       - DATABASE_URL=file:./sheet.db
     volumes:
-      - sqlite_data:/usr/src/app/prisma/
+      - sqlite_data:/usr/src/app/prisma
       - ./uploads:/usr/src/app/uploads
     networks:
       - exel-processor
