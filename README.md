@@ -45,23 +45,5 @@ Excel Processor é uma aplicação web desenvolvida com React e TypeScript que p
 4. Insira os valores de busca (um por linha).
 5. Clique em "Search" para ver os resultados.
 
-## Instalação e Execução
-```bash
-# Clone o repositório
-git clone https://github.com/dario-bastos-dev/Exel-Processor.git
-
-# Entre no diretório do projeto
-cd excel-processor
-
-# Instale as dependências
-npm install
-
-# Execute o projeto em modo de desenvolvimento
-npm run dev
-```
-
-## Contribuições
-Contribuições são bem-vindas! Por favor, leia as diretrizes de contribuição antes de submeter pull requests.
-
 ## Licença
 Este projeto está licenciado sob a MIT.

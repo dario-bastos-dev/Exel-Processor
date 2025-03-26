@@ -1,5 +1,5 @@
 # Etapa 1: Construir a aplicação
-FROM node:current-alpine3.20 AS builder
+FROM node:23-alpine AS builder
 
 # Define o diretório de trabalho
 WORKDIR /usr/src/app
