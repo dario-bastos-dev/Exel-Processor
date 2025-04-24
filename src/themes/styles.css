@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme animation {
+	--animate-rotate: isRotating 1s infinite;
+
+	@keyframes isRotating {
+		to {
+			transform: rotate(1turn);
+		}
+	}
+}
