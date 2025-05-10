@@ -39,6 +39,8 @@ const ExcelProcessor: React.FC = () => {
 
 	const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
+		console.log(file);
+
 		if (file) {
 			handleFileUpload(file);
 		}
@@ -67,6 +69,7 @@ const ExcelProcessor: React.FC = () => {
 					<label className="block">
 						<span className="sr-only">Choose file</span>
 						<input
+							name="file"
 							type="file"
 							accept=".xlsx,.xls"
 							onChange={onFileChange}

@@ -87,8 +87,6 @@ export default function LoginForm({
 
 		const user = await register(body.name, body.email, body.password);
 
-		console.log(error);
-
 		if (user == null) {
 			setNotifications(error);
 			return;
