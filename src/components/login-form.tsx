@@ -60,8 +60,6 @@ export default function LoginForm({
 
 		const user = await login(body.email, body.password);
 
-		console.log(user);
-
 		if (!user) {
 			setNotifications(error);
 			return;

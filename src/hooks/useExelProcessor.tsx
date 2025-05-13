@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios-config';
 import { ExcelFile, SearchConfig } from '../types/types';
 
+const id = localStorage.getItem('id');
+
 const useExcelProcessor = () => {
 	const [files, setFiles] = useState<ExcelFile[]>([]);
 	const [activeFile, setActiveFile] = useState<ExcelFile | null>(null);
@@ -17,8 +19,9 @@ const useExcelProcessor = () => {
 	const fetchFiles = async () => {
 		setIsLoading(true);
 		try {
-			const response = await api.get('files');
-			setFiles(response.data);
+			const response = await api.get(`files/${id}`);
+
+			setFiles(response.data.data.sheet);
 		} catch (error) {
 			console.error('Error fetching files:', error);
 		} finally {
@@ -33,10 +36,13 @@ const useExcelProcessor = () => {
 			const formData = new FormData();
 			formData.append('file', file);
 
-			const id = localStorage.getItem('id');
-			const response = await api.post(`upload/${id}`, formData);
+			const response = await api.post(`upload/${id}`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
 
-			const newFile = response.data;
+			const newFile = response.data.data.sheet;
 			setFiles((prevFiles) => [...prevFiles, newFile]);
 		} catch (error) {
 			console.error('Error uploading file:', error);
@@ -49,7 +55,7 @@ const useExcelProcessor = () => {
 		setIsLoading(true);
 
 		try {
-			const file = files.find((f) => f.id === fileId);
+			const file = files.find((file) => file.id === fileId);
 			if (file) {
 				setActiveFile(file);
 				// Inicialize searchConfig com a primeira coluna selecionada
@@ -61,8 +67,9 @@ const useExcelProcessor = () => {
 				setSearchResults([]);
 
 				// Buscar os cabeçalhos do arquivo
-				const response = await api.get(`files/${fileId}/headers`);
-				setHeaders(response.data);
+				const response = await api.get(`files/${id}/${fileId}/headers`);
+
+				setHeaders(response.data.header);
 			}
 		} catch (error) {
 			console.error('Error selecting file:', error);
@@ -117,13 +124,13 @@ const useExcelProcessor = () => {
 		if (!activeFile || !searchConfig) return;
 
 		try {
-			const response = await api.post(`search`, {
+			const response = await api.post(`files/${id}/search`, {
 				fileId: activeFile.id,
 				columnIndex: searchConfig.selectedColumn,
 				searchValues: searchConfig.searchValues,
 			});
 
-			setSearchResults(response.data.searchResults);
+			setSearchResults(response.data.data.sheet);
 		} catch (error) {
 			console.error('Error performing search:', error);
 		} finally {

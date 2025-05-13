@@ -39,7 +39,6 @@ const ExcelProcessor: React.FC = () => {
 
 	const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
-		console.log(file);
 
 		if (file) {
 			handleFileUpload(file);
