@@ -4,48 +4,48 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 
 interface FormProps {
-	toggleForm: () => void;
+  toggleForm: () => void;
 }
 
 type PropsFormLogin = FormProps & {
-	login: (formData: FormData) => Promise<void>;
+  login: (formData: FormData) => Promise<void>;
 };
 
 export const FormLogin: React.FC<PropsFormLogin> = ({ toggleForm, login }) => {
-	return (
-		<form key="login-form" className="h-[568px] p-6 md:p-8" action={login}>
-			<div className="flex flex-col gap-6 justify-center">
-				<div className="flex flex-col items-center text-center">
-					<h1 className="text-2xl font-bold">Bem vindo!</h1>
-					<p className="text-muted-foreground text-balance">
-						Faça login para continuar
-					</p>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="email">Email</Label>
-					<Input
-						key="email"
-						id="email"
-						name="email"
-						type="email"
-						placeholder="m@example.com"
-						required
-					/>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="password">Senha</Label>
-					<Input
-						key="password"
-						id="password"
-						name="password"
-						type="password"
-						required
-					/>
-				</div>
-				<Button type="submit" className="w-full">
-					Entrar
-				</Button>
-				{/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+  return (
+    <form key="login-form" className="h-[568px] p-6 md:p-8" action={login}>
+      <div className="flex flex-col gap-6 justify-center">
+        <div className="flex flex-col items-center text-center">
+          <h1 className="text-2xl font-bold">Bem vindo!</h1>
+          <p className="text-muted-foreground text-balance">
+            Faça login para continuar
+          </p>
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            key="email"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="password">Senha</Label>
+          <Input
+            key="password"
+            id="password"
+            name="password"
+            type="password"
+            required
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          Entrar
+        </Button>
+        {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-card text-muted-foreground relative z-10 px-2">
               Or continue with
             </span>
@@ -79,111 +79,111 @@ export const FormLogin: React.FC<PropsFormLogin> = ({ toggleForm, login }) => {
               <span className="sr-only">Login with Meta</span>
             </Button>
           </div> */}
-				<div className="text-center text-sm">
-					Não possui uma conta?{' '}
-					<button
-						className="underline underline-offset-4 cursor-pointer hover:text-gray-500"
-						onClick={toggleForm}
-						type="button"
-					>
-						Criar
-					</button>
-				</div>
-			</div>
-		</form>
-	);
+        <div className="text-center text-sm">
+          Não possui uma conta?{' '}
+          <button
+            className="underline underline-offset-4 cursor-pointer hover:text-gray-500"
+            onClick={toggleForm}
+            type="button"
+          >
+            Criar
+          </button>
+        </div>
+      </div>
+    </form>
+  );
 };
 
 type PropsFormRegister = FormProps & {
-	register: (formData: FormData) => Promise<void>;
+  register: (formData: FormData) => Promise<void>;
 };
 
 export const FormSingUp: React.FC<PropsFormRegister> = ({
-	toggleForm,
-	register,
+  toggleForm,
+  register,
 }) => {
-	const [password, setPassword] = useState<string>('');
-	const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-	const verifyPassword = () => {
-		if (password !== confirmPassword) return false;
-		return true;
-	};
+  const verifyPassword = () => {
+    if (password !== confirmPassword) return false;
+    return true;
+  };
 
-	return (
-		<form
-			key="register-form"
-			className="h-[568px] p-6 md:p-8"
-			action={register}
-		>
-			<div className="flex flex-col gap-6">
-				<div className="flex flex-col items-center text-center">
-					<h1 className="text-2xl font-bold">Vamos iniciar</h1>
-					<p className="text-muted-foreground text-balance">Crie sua conta</p>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="name">Nome</Label>
-					<Input
-						key="name"
-						id="name"
-						name="name"
-						type="text"
-						placeholder="Seu nome"
-						required
-					/>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="email">Email</Label>
-					<Input
-						key="email"
-						id="email"
-						name="email"
-						type="email"
-						placeholder="m@example.com"
-						required
-					/>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="password">Senha</Label>
-					<Input
-						key="password"
-						id="password"
-						name="password"
-						type="password"
-						onChange={(e) => setPassword(e.target.value)}
-						required
-					/>
-				</div>
-				<div className="grid gap-3">
-					<Label htmlFor="confirmPassword">Confirmar senha</Label>
-					<Input
-						key="confirmPassword"
-						id="confirmPassword"
-						name="confirmPassword"
-						type="password"
-						onChange={(e) => setConfirmPassword(e.target.value)}
-						required
-					/>
-					{!verifyPassword() && (
-						<p className="fixed bottom-30 text-sm text-red-600">
-							Senhas não são iguais!
-						</p>
-					)}
-				</div>
-				<Button type="submit" className="w-full">
-					Criar
-				</Button>
-				<div className="text-center text-sm">
-					Já possui uma conta?{' '}
-					<button
-						className="underline underline-offset-4 cursor-pointer hover:font-bold active:text-gray-500"
-						onClick={toggleForm}
-						type="button"
-					>
-						Entrar
-					</button>
-				</div>
-			</div>
-		</form>
-	);
+  return (
+    <form
+      key="register-form"
+      className="h-[568px] p-6 md:p-8"
+      action={register}
+    >
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col items-center text-center">
+          <h1 className="text-2xl font-bold">Vamos iniciar</h1>
+          <p className="text-muted-foreground text-balance">Crie sua conta</p>
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="name">Nome</Label>
+          <Input
+            key="name"
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Seu nome"
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            key="email"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="password">Senha</Label>
+          <Input
+            key="password"
+            id="password"
+            name="password"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="confirmPassword">Confirmar senha</Label>
+          <Input
+            key="confirmPassword"
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          {!verifyPassword() && (
+            <p className="fixed bottom-30 text-sm text-red-600">
+              Senhas não são iguais!
+            </p>
+          )}
+        </div>
+        <Button type="submit" className="w-full">
+          Criar
+        </Button>
+        <div className="text-center text-sm">
+          Já possui uma conta?{' '}
+          <button
+            className="underline underline-offset-4 cursor-pointer hover:font-bold active:text-gray-500"
+            onClick={toggleForm}
+            type="button"
+          >
+            Entrar
+          </button>
+        </div>
+      </div>
+    </form>
+  );
 };
