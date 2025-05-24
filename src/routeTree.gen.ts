@@ -8,92 +8,140 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router';
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as PathlessLayoutPlanilhasArquivosImport } from './routes/_pathlessLayout/planilhas/arquivos';
+import { Route as PathlessLayoutPlanilhasPesquisaImport } from './routes/_pathlessLayout/planilhas/pesquisa';
+import { Route as PathlessLayoutRouteImport } from './routes/_pathlessLayout/route';
 import { Route as IndexImport } from './routes/index';
-
-// Create Virtual Routes
-
-const HomeLazyImport = createFileRoute('/home')();
 
 // Create/Update Routes
 
-const HomeLazyRoute = HomeLazyImport.update({
-	id: '/home',
-	path: '/home',
-	getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/home.lazy').then((d) => d.Route));
+const PathlessLayoutRouteRoute = PathlessLayoutRouteImport.update({
+  id: '/_pathlessLayout',
+  getParentRoute: () => rootRoute,
+} as any);
 
 const IndexRoute = IndexImport.update({
-	id: '/',
-	path: '/',
-	getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
 } as any);
+
+const PathlessLayoutPlanilhasPesquisaRoute =
+  PathlessLayoutPlanilhasPesquisaImport.update({
+    id: '/planilhas/pesquisa',
+    path: '/planilhas/pesquisa',
+    getParentRoute: () => PathlessLayoutRouteRoute,
+  } as any);
+
+const PathlessLayoutPlanilhasArquivosRoute =
+  PathlessLayoutPlanilhasArquivosImport.update({
+    id: '/planilhas/arquivos',
+    path: '/planilhas/arquivos',
+    getParentRoute: () => PathlessLayoutRouteRoute,
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-	interface FileRoutesByPath {
-		'/': {
-			id: '/';
-			path: '/';
-			fullPath: '/';
-			preLoaderRoute: typeof IndexImport;
-			parentRoute: typeof rootRoute;
-		};
-		'/home': {
-			id: '/home';
-			path: '/home';
-			fullPath: '/home';
-			preLoaderRoute: typeof HomeLazyImport;
-			parentRoute: typeof rootRoute;
-		};
-	}
+  interface FileRoutesByPath {
+    '/': {
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/_pathlessLayout': {
+      id: '/_pathlessLayout';
+      path: '';
+      fullPath: '';
+      preLoaderRoute: typeof PathlessLayoutRouteImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/_pathlessLayout/planilhas/arquivos': {
+      id: '/_pathlessLayout/planilhas/arquivos';
+      path: '/planilhas/arquivos';
+      fullPath: '/planilhas/arquivos';
+      preLoaderRoute: typeof PathlessLayoutPlanilhasArquivosImport;
+      parentRoute: typeof PathlessLayoutRouteImport;
+    };
+    '/_pathlessLayout/planilhas/pesquisa': {
+      id: '/_pathlessLayout/planilhas/pesquisa';
+      path: '/planilhas/pesquisa';
+      fullPath: '/planilhas/pesquisa';
+      preLoaderRoute: typeof PathlessLayoutPlanilhasPesquisaImport;
+      parentRoute: typeof PathlessLayoutRouteImport;
+    };
+  }
 }
 
 // Create and export the route tree
 
+interface PathlessLayoutRouteRouteChildren {
+  PathlessLayoutPlanilhasArquivosRoute: typeof PathlessLayoutPlanilhasArquivosRoute;
+  PathlessLayoutPlanilhasPesquisaRoute: typeof PathlessLayoutPlanilhasPesquisaRoute;
+}
+
+const PathlessLayoutRouteRouteChildren: PathlessLayoutRouteRouteChildren = {
+  PathlessLayoutPlanilhasArquivosRoute: PathlessLayoutPlanilhasArquivosRoute,
+  PathlessLayoutPlanilhasPesquisaRoute: PathlessLayoutPlanilhasPesquisaRoute,
+};
+
+const PathlessLayoutRouteRouteWithChildren =
+  PathlessLayoutRouteRoute._addFileChildren(PathlessLayoutRouteRouteChildren);
+
 export interface FileRoutesByFullPath {
-	'/': typeof IndexRoute;
-	'/home': typeof HomeLazyRoute;
+  '/': typeof IndexRoute;
+  '': typeof PathlessLayoutRouteRouteWithChildren;
+  '/planilhas/arquivos': typeof PathlessLayoutPlanilhasArquivosRoute;
+  '/planilhas/pesquisa': typeof PathlessLayoutPlanilhasPesquisaRoute;
 }
 
 export interface FileRoutesByTo {
-	'/': typeof IndexRoute;
-	'/home': typeof HomeLazyRoute;
+  '/': typeof IndexRoute;
+  '': typeof PathlessLayoutRouteRouteWithChildren;
+  '/planilhas/arquivos': typeof PathlessLayoutPlanilhasArquivosRoute;
+  '/planilhas/pesquisa': typeof PathlessLayoutPlanilhasPesquisaRoute;
 }
 
 export interface FileRoutesById {
-	__root__: typeof rootRoute;
-	'/': typeof IndexRoute;
-	'/home': typeof HomeLazyRoute;
+  __root__: typeof rootRoute;
+  '/': typeof IndexRoute;
+  '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren;
+  '/_pathlessLayout/planilhas/arquivos': typeof PathlessLayoutPlanilhasArquivosRoute;
+  '/_pathlessLayout/planilhas/pesquisa': typeof PathlessLayoutPlanilhasPesquisaRoute;
 }
 
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths: '/' | '/home';
-	fileRoutesByTo: FileRoutesByTo;
-	to: '/' | '/home';
-	id: '__root__' | '/' | '/home';
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: '/' | '' | '/planilhas/arquivos' | '/planilhas/pesquisa';
+  fileRoutesByTo: FileRoutesByTo;
+  to: '/' | '' | '/planilhas/arquivos' | '/planilhas/pesquisa';
+  id:
+    | '__root__'
+    | '/'
+    | '/_pathlessLayout'
+    | '/_pathlessLayout/planilhas/arquivos'
+    | '/_pathlessLayout/planilhas/pesquisa';
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-	IndexRoute: typeof IndexRoute;
-	HomeLazyRoute: typeof HomeLazyRoute;
+  IndexRoute: typeof IndexRoute;
+  PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-	IndexRoute: IndexRoute,
-	HomeLazyRoute: HomeLazyRoute,
+  IndexRoute: IndexRoute,
+  PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
 };
 
 export const routeTree = rootRoute
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -102,14 +150,26 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/home"
+        "/_pathlessLayout"
       ]
     },
     "/": {
       "filePath": "index.ts"
     },
-    "/home": {
-      "filePath": "home.lazy.ts"
+    "/_pathlessLayout": {
+      "filePath": "_pathlessLayout/route.tsx",
+      "children": [
+        "/_pathlessLayout/planilhas/arquivos",
+        "/_pathlessLayout/planilhas/pesquisa"
+      ]
+    },
+    "/_pathlessLayout/planilhas/arquivos": {
+      "filePath": "_pathlessLayout/planilhas/arquivos.tsx",
+      "parent": "/_pathlessLayout"
+    },
+    "/_pathlessLayout/planilhas/pesquisa": {
+      "filePath": "_pathlessLayout/planilhas/pesquisa.tsx",
+      "parent": "/_pathlessLayout"
     }
   }
 }

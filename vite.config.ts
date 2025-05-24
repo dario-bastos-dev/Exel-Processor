@@ -6,15 +6,15 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [
-		react(),
-		tailwindcss(),
-		TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
-	],
-	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-		},
-	},
-	server: { port: 8000 },
+  plugins: [
+    tailwindcss(),
+    TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+    react(),
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  server: { port: 8000 },
 });

@@ -66,7 +66,7 @@ export default function LoginForm({
     }
     setNotifications(['Login realizado com sucesso!']);
     setTimeout(() => {
-      navigate({ to: '/home' });
+      navigate({ to: '/planilhas/arquivos' });
     }, 1000);
   };
 
